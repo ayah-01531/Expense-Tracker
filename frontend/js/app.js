@@ -8,6 +8,43 @@
 //
 // A possible structure (change it if you have a better idea):
 //   - async function getExpenses()          fetch(API_URL), return the JSON
+const tbody=document.getElementById("expensesBody");
+async function loadExpenses()
+{
+    try {
+    const response=await fetch("http://localhost:3000/api/expenses");
+    if (!response.ok) throw new Error("Request failed");
+
+    const expenses = await response.json();
+    renderTable(expenses);
+    }
+    catch (err) {
+    console.error(err);
+    tbody.innerHTML = "<tr><td colspan='5'>Couldn't load expenses</td></tr>";
+  }
+  function renderTable(expenses) {
+  tbody.innerHTML = "";
+
+  expenses.forEach(function (expense) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${expense.title}</td>
+      <td>$${Number(expense.amount).toFixed(2)}</td>
+      <td>${expense.category}</td>
+      <td>${expense.date}</td>
+      <td>
+        <button>Edit</button>
+        <button>Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+}
+  loadExpenses();
+
+
+
 //   - async function addExpense(data)       fetch(API_URL, { method: "POST", ... })
 //   - async function updateExpense(id,data) fetch(API_URL + "/" + id, { method: "PUT", ... })
 //   - async function deleteExpense(id)      fetch(API_URL + "/" + id, { method: "DELETE" })
