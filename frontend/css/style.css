@@ -1,2 +1,86 @@
 /* Your custom styles go here.
    Use Bootstrap classes first, and write your own CSS only when you need to. */
+#logoImage
+{
+   width: 150px;
+   padding: 20px;
+
+
+}
+.mainHeader
+{
+   display: flex;
+   background-color: #FAFAFA; 
+    justify-content: space-between;
+    padding: 10px;
+   border-radius: 15px;
+
+    
+}
+.hederButton {
+   margin-top: 23px;
+   display: flex;
+
+   justify-self: end;
+   gap: 10px;
+   padding: 10px;
+}
+.hederButton a{
+color: #067e7b;
+text-decoration: none;
+}
+.hederButton a:hover
+{
+   color: #15b891;
+
+}
+.containerCard{
+   display: flex;
+   flex-direction: row;
+   gap:15px;
+   padding:15px;
+   justify-content: center;
+   
+
+}
+.card{
+   padding:10px;
+   width: 400px;
+
+}
+.card h7
+{
+   color: #055d5b;
+}
+.AddEspenses .card
+{width: auto;
+ padding: 20px;
+ margin: 20px;
+
+
+}
+.Add{
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   
+}
+.form-control,.form-select{
+   width:300px;
+}
+.btn
+{
+   align-self: center;
+   width: 35%;
+   margin: 20px;
+   padding: 10px;
+   background-color: #055d5b;
+   color: #FAFAFA;
+
+}
+.btn:hover{
+      background-color: #15b891;
+      color: #FAFAFA;
+
+
+}
