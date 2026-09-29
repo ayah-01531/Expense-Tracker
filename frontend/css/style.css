@@ -48,14 +48,14 @@ text-decoration: none;
    width: 400px;
 
 }
-.card h7
+.card h7 
 {
    color: #055d5b;
 }
 .AddEspenses .card
 {width: auto;
  padding: 20px;
- margin: 20px;
+ margin: 50px;
 
 
 }
@@ -68,7 +68,7 @@ text-decoration: none;
 .form-control,.form-select{
    width:300px;
 }
-.btn
+.AddEspenses .btn 
 {
    align-self: center;
    width: 35%;
@@ -78,9 +78,44 @@ text-decoration: none;
    color: #FAFAFA;
 
 }
-.btn:hover{
+.AddEspenses.btn:hover{
       background-color: #15b891;
       color: #FAFAFA;
 
 
 }
+.tableCard .card
+{
+   width: auto;
+   padding: 30px;
+   margin: 50px;
+}
+.tableheader
+{
+   display: flex;
+   flex-direction: row;
+   margin-bottom: 15px;
+   justify-content: space-between;
+}
+.categoryTable
+{
+   display: flex;
+   flex-direction: row;
+   gap:10px;
+
+}
+.categoryTable label{
+   font-size: large;
+}
+
+.table
+{
+   
+   padding: 10px;
+}
+.table th {
+   color:#055;
+}
+
+
+
