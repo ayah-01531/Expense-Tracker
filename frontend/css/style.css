@@ -50,7 +50,15 @@ text-decoration: none;
 }
 .card h7 
 {
+   font-size: 20px;
    color: #055d5b;
+}
+.card p
+{
+   color: #15b891;
+   font-size: 30px;
+   padding: 15px;
+   text-align: center;
 }
 .AddEspenses .card
 {width: auto;
@@ -70,8 +78,9 @@ text-decoration: none;
 }
 .AddEspenses .btn 
 {
-   align-self: center;
-   width: 35%;
+  
+  
+   width: 20%;
    margin: 20px;
    padding: 10px;
    background-color: #055d5b;
@@ -117,5 +126,11 @@ text-decoration: none;
    color:#055;
 }
 
+
+.modal-title{
+   color: #055d5b;
+   font-size: 1.5rem;
+  
+}
 
 
