@@ -19,47 +19,38 @@ async function loadExpenses()
     return  await response.json();
    
 }
-  function renderTable(expenses) {
-    currentExpenses = expenses;
-  tbody.innerHTML = "";
+ 
 
-  expenses.forEach(function (expense) {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${expense.title}</td>
-      <td>${Number(expense.amount).toFixed(2)}  JOD</td>
-      <td> <span class="badge text-bg-warning">${expense.category}</span></td>
-      <td>${expense.date}</td>
-      <td>
-        <button class="btn btn btn-outline-success "onclick="editClick(${expense.id})">Edit</button>
-        <button class="btn btn-outline-danger">Delete</button>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
+// ---------- Validation ----------
 
-}
-function renderSummary(expenses) {
-  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
-  const max = expenses.length ? Math.max(...expenses.map(e => Number(e.amount))) : 0;
+function validateExpenseForm(title, amount) {
+  let isValid = true;
 
-  document.querySelector("#totalcard .value").textContent = total.toFixed(2)+"  JOD";
-  document.querySelector("#countcard .value").textContent = expenses.length;
-  document.querySelector("#maxcard .value").textContent = max.toFixed(2)+"  JOD";
-}
-  
+  const titleInput = document.getElementById("title");
+  const titleError = document.getElementById("titleError");
+  const amountInput = document.getElementById("amount");
+  const amountError = document.getElementById("amountError");
 
+  titleInput.classList.remove("is-invalid");
+  amountInput.classList.remove("is-invalid");
+  titleError.textContent = "";
+  amountError.textContent = "";
 
-  async function refresh() {
-  try {
-    const expenses = await loadExpenses();
-    renderTable(expenses);
-    renderSummary(expenses);
-  } catch (err) {
-    console.error(err);
-    tbody.innerHTML = "<tr><td colspan='5'>Couldn't load expenses</td></tr>";
+  if (title.trim() === "") {
+    titleInput.classList.add("is-invalid");
+    titleError.textContent = "Title is required";
+    isValid = false;
   }
+
+  if (isNaN(amount) || amount <= 0) {
+    amountInput.classList.add("is-invalid");
+    amountError.textContent = "Amount must be greater than 0";
+    isValid = false;
+  }
+
+  return isValid;
 }
+ 
 
 
 
@@ -166,8 +157,49 @@ async function deleteExpense(id) {
   }
 }
 //   - async function refresh()              get the list, then call renderTable and renderSummary
+ async function refresh() {
+  try {
+    const expenses = await loadExpenses();
+    renderTable(expenses);
+    renderSummary(expenses);
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = "<tr><td colspan='5'>Couldn't load expenses</td></tr>";
+  }
+}
+
+  
+
 //   - renderTable(list)                     build the table rows from the array the API returned
+ function renderTable(expenses) {
+    currentExpenses = expenses;
+  tbody.innerHTML = "";
+
+  expenses.forEach(function (expense) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${expense.title}</td>
+      <td>${Number(expense.amount).toFixed(2)}  JOD</td>
+      <td> <span class="badge text-bg-warning">${expense.category}</span></td>
+      <td>${expense.date}</td>
+      <td>
+        <button class="btn btn btn-outline-success "onclick="editClick(${expense.id})">Edit</button>
+        <button class="btn btn-outline-danger"onclick="deleteExpense(${expense.id})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+}
 //   - renderSummary(list)                   update the summary cards
+function renderSummary(expenses) {
+  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const max = expenses.length ? Math.max(...expenses.map(e => Number(e.amount))) : 0;
+
+  document.querySelector("#totalcard .value").textContent = total.toFixed(2)+"  JOD";
+  document.querySelector("#countcard .value").textContent = expenses.length;
+  document.querySelector("#maxcard .value").textContent = max.toFixed(2)+"  JOD";
+}
 //   - applyFilter()                         re-render with the list filtered by category
 //
 // Don't forget:
