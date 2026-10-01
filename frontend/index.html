@@ -24,22 +24,26 @@
     <div class="containerCard">
       <div class="card" id="totalcard">
         <h7 class="title">Total expenses</h7>
+        <p class="value">0.00  JOD</p>
 
 
       </div>
       <div class="card" id="countcard">
         <h7 class="title">Number of expenses</h7>
+         <p class="value">0</p>
 
       </div>
       <div class="card" id="maxcard">
         <h7 class="title">Highest expense</h7>
+        <p class="value">0.00  JOD</p>
 
       </div>
     </div>
     <div class="AddEspenses">
       <div class="card">
         <h6>Add expense</h6>
-        <div class="Add"id="AddEspenses">
+        <form id="expenseForm">
+        <div class="Add">
           <div>
             <label for="title"> Title</label>
             <input type="text" class="form-control" id="title" required="">
@@ -47,11 +51,13 @@
 
           <div>
             <label for="amount">Amount</label>
-            <input type="text" class="form-control" id="amount" required="">
+            <input type="number" class="form-control" id="amount" step="1" required="">
           </div>
           <div>
             <label for="category">Category</label>
-            <input type="list" class="form-select" id="category" required="">
+            <select class="form-select" id="category" required>
+            <option value="">Choose...</option>
+            </select>
           </div>
           <div>
 
@@ -60,7 +66,8 @@
           </div>
 
         </div>
-        <button class="btn">Add expense</button>
+        <button type="submit" class="btn">Add expense</button>
+        </form>
 
       </div>
     </div>
@@ -99,10 +106,43 @@
 
 
   </main>
-  <footer>
-
-
-  </footer>
+  <div class="modal" id="editModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Expense</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <input type="hidden" id="editId">
+          <div class="mb-3">
+            <label for="editTitle" class="form-label">Title</label>
+            <input type="text" class="form-control" id="editTitle" required>
+          </div>
+          <div class="mb-3">
+            <label for="editAmount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="editAmount" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label for="editCategory" class="form-label">Category</label>
+            <select class="form-select" id="editCategory" required>
+              <option value="">Choose...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="editDate" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" form="editForm" class="btn btn-success" onclick="document.getElementById('editForm').submit() ">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- PHASE 2: build the page here.
    
