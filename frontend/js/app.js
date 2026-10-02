@@ -243,6 +243,25 @@ function showError(message) {
 function hideError() {
   document.getElementById("errorAlert").classList.add("d-none");
 }
+//dark mode----------------------
+const darkModeToggle = document.getElementById("darkModeToggle");
+
+darkModeToggle.addEventListener("click", function () {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    darkModeToggle.textContent = "Light Mode";
+    localStorage.setItem("theme", "dark");
+  } else {
+    darkModeToggle.textContent = "Dark Mode";
+    localStorage.setItem("theme", "light");
+  }
+});
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  darkModeToggle.textContent = "Light Mode";
+}
 // Don't forget:
 //   - Show a Bootstrap spinner while a request is in flight.
 //   - Wrap every fetch call in try/catch, and show a Bootstrap alert on failure.
