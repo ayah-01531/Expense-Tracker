@@ -1,6 +1,12 @@
 // Expense Tracker - frontend logic
 
-
+// PHASE 2
+// Your backend from Phase 1 is already running, with real expenses in the
+// database (from schema.sql). Build this page directly against it with
+// fetch and async/await - there is no in-memory or localStorage stage
+// this time, and no sample data file.
+//
+// A possible structure (change it if you have a better idea):
 //   - async function getExpenses()          fetch(API_URL), return the JSON
 const API_URL = "http://localhost:3000/api/expenses";
 const tbody=document.getElementById("expensesBody");
@@ -89,7 +95,7 @@ document.getElementById("expenseForm").addEventListener("submit", async function
   refresh();
 
 //   - async function updateExpense(id,data) fetch(API_URL + "/" + id, { method: "PUT", ... })
-let currentExpenses = [];
+let currentExpenses = [];   // تأكدي إنها معرّفة مرة وحدة بس بالملف
 
 const editModalEl = document.getElementById("editModal");
 const editModal = new bootstrap.Modal(editModalEl);
@@ -154,14 +160,15 @@ async function deleteExpense(id) {
 //   - async function refresh()              get the list, then call renderTable and renderSummary
  async function refresh() {
   showSpinner(); 
+    hideError(); 
   try {
     const expenses = await loadExpenses();
     renderTable(expenses);
-    
      applyFilter(); 
   } catch (err) {
     console.error(err);
-    tbody.innerHTML = "<tr><td colspan='5'>Couldn't load expenses</td></tr>";
+    tbody.innerHTML = "";   
+    showError("Couldn't load expenses. Please make sure the server is running.");
   }
 }
 
@@ -226,5 +233,20 @@ function showSpinner() {
   tbody.innerHTML = "";
   tbody.appendChild(spinnerRow);
 }
+//alert----------------------
+function showError(message) {
+  const alertBox = document.getElementById("errorAlert");
+  alertBox.textContent = message;
+  alertBox.classList.remove("d-none");
+}
 
+function hideError() {
+  document.getElementById("errorAlert").classList.add("d-none");
+}
+// Don't forget:
+//   - Show a Bootstrap spinner while a request is in flight.
+//   - Wrap every fetch call in try/catch, and show a Bootstrap alert on failure.
+//   - After add, edit, or delete, call refresh() so the page always shows
+//     what the server actually saved - never update the table by hand.
+//   - The API is at http://localhost:3000/api/expenses (see the Roadmap).
 
