@@ -1,15 +1,10 @@
 // Expense Tracker - frontend logic
 
-// PHASE 2
-// Your backend from Phase 1 is already running, with real expenses in the
-// database (from schema.sql). Build this page directly against it with
-// fetch and async/await - there is no in-memory or localStorage stage
-// this time, and no sample data file.
-//
-// A possible structure (change it if you have a better idea):
+
 //   - async function getExpenses()          fetch(API_URL), return the JSON
 const API_URL = "http://localhost:3000/api/expenses";
 const tbody=document.getElementById("expensesBody");
+document.getElementById("categoryFilter").addEventListener("change", applyFilter);
 async function loadExpenses()
 {
     
@@ -94,7 +89,7 @@ document.getElementById("expenseForm").addEventListener("submit", async function
   refresh();
 
 //   - async function updateExpense(id,data) fetch(API_URL + "/" + id, { method: "PUT", ... })
-let currentExpenses = [];   // تأكدي إنها معرّفة مرة وحدة بس بالملف
+let currentExpenses = [];
 
 const editModalEl = document.getElementById("editModal");
 const editModal = new bootstrap.Modal(editModalEl);
@@ -158,10 +153,12 @@ async function deleteExpense(id) {
 }
 //   - async function refresh()              get the list, then call renderTable and renderSummary
  async function refresh() {
+  showSpinner(); 
   try {
     const expenses = await loadExpenses();
     renderTable(expenses);
-    renderSummary(expenses);
+    
+     applyFilter(); 
   } catch (err) {
     console.error(err);
     tbody.innerHTML = "<tr><td colspan='5'>Couldn't load expenses</td></tr>";
@@ -173,6 +170,9 @@ async function deleteExpense(id) {
 //   - renderTable(list)                     build the table rows from the array the API returned
  function renderTable(expenses) {
     currentExpenses = expenses;
+    renderTableOnly(expenses);
+ }
+ function renderTableOnly(expenses) {
   tbody.innerHTML = "";
 
   expenses.forEach(function (expense) {
@@ -181,7 +181,7 @@ async function deleteExpense(id) {
       <td>${expense.title}</td>
       <td>${Number(expense.amount).toFixed(2)}  JOD</td>
       <td> <span class="badge text-bg-warning">${expense.category}</span></td>
-      <td>${expense.date}</td>
+      <td>${expense.date.split("T")[0]}</td>
       <td>
         <button class="btn btn btn-outline-success "onclick="editClick(${expense.id})">Edit</button>
         <button class="btn btn-outline-danger"onclick="deleteExpense(${expense.id})">Delete</button>
@@ -201,11 +201,30 @@ function renderSummary(expenses) {
   document.querySelector("#maxcard .value").textContent = max.toFixed(2)+"  JOD";
 }
 //   - applyFilter()                         re-render with the list filtered by category
-//
-// Don't forget:
-//   - Show a Bootstrap spinner while a request is in flight.
-//   - Wrap every fetch call in try/catch, and show a Bootstrap alert on failure.
-//   - After add, edit, or delete, call refresh() so the page always shows
-//     what the server actually saved - never update the table by hand.
-//   - The API is at http://localhost:3000/api/expenses (see the Roadmap).
+function applyFilter() {
+  const selected = document.getElementById("categoryFilter").value;
+
+  const filtered = selected
+    ? currentExpenses.filter(e => e.category === selected)
+    : currentExpenses;
+
+  renderTableOnly(filtered);
+  renderSummary(filtered);
+}
+
+//-Spinner----------------------
+function showSpinner() {
+  const spinnerRow = document.createElement("tr");
+  spinnerRow.innerHTML = `
+    <td colspan="5" class="text-center p-5">
+      <button class="btn btn-success" type="button" disabled>
+  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+  <span role="status">Loading...</span>
+</button>
+    </td>
+  `;
+  tbody.innerHTML = "";
+  tbody.appendChild(spinnerRow);
+}
+
 
