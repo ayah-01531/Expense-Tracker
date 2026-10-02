@@ -132,5 +132,88 @@ text-decoration: none;
    font-size: 1.5rem;
   
 }
+@media (min-width: 769px) and (max-width: 1024px) {
+  .card {
+    width: 300px;
+  }
 
+  .AddEspenses .card,
+  .tableCard .card {
+    margin: 25px;
+  }
+
+  .Add {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .Add > div {
+    flex: 1 1 45%;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+
+  .AddEspenses .card,
+  .tableCard .card {
+    margin: 15px 10px;
+  }
+
+  .containerCard {
+    flex-direction: column;
+  }
+
+  .Add {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .Add > div {
+    width: 100%;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+  }
+
+  .AddEspenses .btn {
+    width: 100%;
+    margin: 10px 0 0;
+  }
+
+  .tableCard {
+    overflow-x: auto;
+  }
+
+  .tableCard .card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .tableheader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .categoryTable {
+    width: 100%;
+  }
+
+  .categoryTable select {
+    width: 100%;
+  }
+}
 
