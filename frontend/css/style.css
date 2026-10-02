@@ -35,17 +35,16 @@ text-decoration: none;
 
 }
 .containerCard{
-   display: flex;
-   flex-direction: row;
-   gap:15px;
-   padding:15px;
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap:20px;
+   padding:50px;
    justify-content: center;
-   
-
 }
 .card{
+   border-radius: 10px;
    padding:10px;
-   width: 400px;
+   gap: 8px;
 
 }
 .card h7 
@@ -57,6 +56,7 @@ text-decoration: none;
 {
    color: #15b891;
    font-size: 30px;
+   font-weight: bold;
    padding: 15px;
    text-align: center;
 }
@@ -132,10 +132,11 @@ text-decoration: none;
    font-size: 1.5rem;
   
 }
-@media (min-width: 769px) and (max-width: 1024px) {
-  .card {
-    width: 300px;
+@media (min-width: 769px) and (max-width: 1032px) {
+    .containerCard {
+    grid-template-columns: 1fr;  
   }
+  
 
   .AddEspenses .card,
   .tableCard .card {
@@ -158,18 +159,17 @@ text-decoration: none;
 }
 
 @media (max-width: 768px) {
-  .card {
-    width: 100%;
+    .containerCard {
+    grid-template-columns: 1fr;
   }
+  
 
   .AddEspenses .card,
   .tableCard .card {
     margin: 15px 10px;
   }
 
-  .containerCard {
-    flex-direction: column;
-  }
+  
 
   .Add {
     flex-direction: column;
