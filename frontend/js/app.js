@@ -11,6 +11,7 @@
 const API_URL = "http://localhost:3000/api/expenses";
 const tbody=document.getElementById("expensesBody");
 document.getElementById("categoryFilter").addEventListener("change", applyFilter);
+document.getElementById("monthFilter").addEventListener("change", applyFilter);
 async function loadExpenses()
 {
     
@@ -126,7 +127,7 @@ function editClick(id) {
   document.getElementById("editTitle").value = expense.title;
   document.getElementById("editAmount").value = expense.amount;
   document.getElementById("editCategory").value = expense.category;
-  document.getElementById("editDate").value = expense.date;
+  document.getElementById("editDate").value = expense.date.split("T")[0];
 
   editModal.show();
 }
@@ -209,11 +210,18 @@ function renderSummary(expenses) {
 }
 //   - applyFilter()                         re-render with the list filtered by category
 function applyFilter() {
-  const selected = document.getElementById("categoryFilter").value;
+  const selectedCategory = document.getElementById("categoryFilter").value;
+    const selectedMonth = document.getElementById("monthFilter").value;
 
-  const filtered = selected
-    ? currentExpenses.filter(e => e.category === selected)
-    : currentExpenses;
+let filtered = currentExpenses;
+
+  if (selectedCategory) {
+    filtered = filtered.filter(e => e.category === selectedCategory);
+  }
+
+  if (selectedMonth) {
+    filtered = filtered.filter(e => e.date.split("T")[0].split("-")[1] === selectedMonth);
+  }
 
   renderTableOnly(filtered);
   renderSummary(filtered);
