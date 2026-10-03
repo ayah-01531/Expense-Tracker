@@ -1,2 +1,303 @@
 /* Your custom styles go here.
    Use Bootstrap classes first, and write your own CSS only when you need to. */
+
+:root {
+  --bg-main: #ffffff;
+  --bg-card: #FAFAFA;
+  --text-main: #222222;
+  --text-title: #055d5b;
+  --text-value: #15b891;
+  --btn-bg: #055d5b;
+  --btn-hover: #15b891;
+  --border-color: #dddddd;
+}
+
+body.dark {
+  --bg-main: #121212;
+  --bg-card: #1e1e1e;
+  --text-main: #eeeeee;
+  --text-title: #4fd1c5;
+  --text-value: #4fd1c5;
+  --btn-bg: #15b891;
+  --btn-hover: #0e8a6d;
+  --border-color: #333333;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#logoImage {
+  width: 150px;
+  padding: 20px;
+ 
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.mainHeader {
+  display: flex;
+  background-color: var(--bg-card);
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hederButton {
+  margin-top: 23px;
+  display: flex;
+  justify-self: end;
+  gap: 10px;
+  padding: 10px;
+  align-items: center;
+}
+
+.hederButton a {
+  color: #067e7b;
+  text-decoration: none;
+}
+
+.hederButton a:hover {
+  color: #15b891;
+}
+
+
+
+.containerCard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 50px;
+  justify-content: center;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border-radius: 10px;
+  padding: 10px;
+  gap: 8px;
+}
+
+.card h7 {
+  font-size: 20px;
+  color: var(--text-title);
+}
+
+.card p {
+  color: var(--text-value);
+  font-size: 30px;
+  font-weight: bold;
+  padding: 15px;
+  text-align: center;
+}
+
+.AddExpenses .card {
+  width: auto;
+  padding: 20px;
+  margin: 50px;
+}
+
+.Add {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.form-control,
+.form-select {
+  width: 300px;
+}
+
+.AddExpenses .btn {
+  width: 20%;
+  margin: 20px;
+  padding: 10px;
+  background-color: var(--btn-bg);
+  color: #FAFAFA;
+}
+
+.AddExpenses.btn:hover {
+  background-color: var(--btn-hover);
+  color: #FAFAFA;
+}
+
+.tableCard .card {
+  width: auto;
+  padding: 30px;
+  margin: 50px;
+}
+
+.tableheader {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  justify-content: space-between;
+}
+
+.categoryTable {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.categoryTable label {
+  font-size: large;
+}
+
+.table {
+  padding: 10px;
+  color: var(--text-main);
+}
+
+.table th {
+  color: var(--text-title);
+}
+
+.modal-title {
+  color: #055d5b;
+  font-size: 1.5rem;
+}
+
+/* ---------- Dark mode: Bootstrap elements ---------- */
+body.dark .form-control,
+body.dark .form-select {
+  background-color: #2a2a2a;
+  color: #eeeeee;
+  border-color: #444444;
+}
+
+
+body.dark .modal-content {
+  background-color: #1e1e1e;
+  color: #eeeeee;
+}
+
+body.dark .table {
+  --bs-table-bg: #1e1e1e;
+  --bs-table-color: #eeeeee;
+  --bs-table-border-color: #333333;
+}
+body.dark .table-hover > tbody > tr:hover > * {
+  background-color: #2a2a2a;
+  color: #eeeeee;
+}
+body.dark .btn-outline-danger {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+body.dark .btn-outline-danger:hover {
+  background-color: #ff6b6b;
+  color: #121212;
+}
+body.dark label {
+  color: #4fd1c5;
+}
+body.dark h4 ,h6 {
+  color: #4fd1c5;
+}
+
+body.dark .invalid-feedback {
+  color: #ff8a8a;
+}
+
+/* ---------- Tablet ---------- */
+@media (min-width: 769px) and (max-width: 1032px) {
+  .containerCard {
+    grid-template-columns: 1fr;
+  }
+
+  .AddExpenses.card,
+  .tableCard .card {
+    margin: 25px;
+  }
+
+  .Add {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .Add > div {
+    flex: 1 1 45%;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+  .containerCard {
+    grid-template-columns: 1fr;
+  }
+
+  .AddExpenses .card,
+  .tableCard .card {
+    margin: 15px 10px;
+  }
+
+  .Add {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .Add > div {
+    width: 100%;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+  }
+
+  .AddExpenses .btn {
+    width: 100%;
+    margin: 10px 0 0;
+  }
+
+  .tableCard {
+    overflow-x: auto;
+  }
+
+  .tableCard .card {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .tableheader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .categoryTable {
+    width: 100%;
+  }
+
+  .categoryTable select {
+    width: 100%;
+  }
+}
+
+.theme-toggle {
+  border-radius: 20px;
+  padding: 6px 18px;
+  border-color: var(--text-title);
+  color: var(--text-title);
+  background-color: transparent;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--text-title);
+  color: white;
+}

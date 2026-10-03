@@ -150,19 +150,7 @@ app.delete('/api/expenses/:id',async(req,res)=>{
 
 });
 //
-// Tips:
-//   - Create one Pool (from the "pg" library) with the values from .env,
-//     and use pool.query(...) in every route.
-//   - ALWAYS send the values as parameters: pool.query("... WHERE id = $1", [id]).
-//     NEVER build the SQL text by joining strings with data from the user.
-//   - Use RETURNING to get the new (or updated) row back from INSERT and UPDATE.
-//   - The database creates the id. The client never sends one.
-//   - pg returns NUMERIC as text and DATE as a JavaScript Date, so fix both in your SELECT.
-//     Hint: amount::float8 and to_char(date, 'YYYY-MM-DD').
-//   - Validate the data before the query, and answer 400 with a message that explains the problem.
-//   - Check the id before the query. A text like "abc" makes PostgreSQL throw an error.
-//   - Enable CORS so the frontend can talk to the server.
-//   - Test every endpoint with Thunder Client BEFORE you connect the frontend.
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -1,26 +1,281 @@
-// Expense Tracker - frontend logic
 
-// PHASE 2
-// Your backend from Phase 1 is already running, with real expenses in the
-// database (from schema.sql). Build this page directly against it with
-// fetch and async/await - there is no in-memory or localStorage stage
-// this time, and no sample data file.
-//
-// A possible structure (change it if you have a better idea):
 //   - async function getExpenses()          fetch(API_URL), return the JSON
-//   - async function addExpense(data)       fetch(API_URL, { method: "POST", ... })
-//   - async function updateExpense(id,data) fetch(API_URL + "/" + id, { method: "PUT", ... })
-//   - async function deleteExpense(id)      fetch(API_URL + "/" + id, { method: "DELETE" })
-//   - async function refresh()              get the list, then call renderTable and renderSummary
-//   - renderTable(list)                     build the table rows from the array the API returned
-//   - renderSummary(list)                   update the summary cards
-//   - applyFilter()                         re-render with the list filtered by category
-//
-// Don't forget:
-//   - Show a Bootstrap spinner while a request is in flight.
-//   - Wrap every fetch call in try/catch, and show a Bootstrap alert on failure.
-//   - After add, edit, or delete, call refresh() so the page always shows
-//     what the server actually saved - never update the table by hand.
-//   - The API is at http://localhost:3000/api/expenses (see the Roadmap).
-
 const API_URL = "http://localhost:3000/api/expenses";
+const tbody=document.getElementById("expensesBody");
+document.getElementById("categoryFilter").addEventListener("change", applyFilter);
+document.getElementById("monthFilter").addEventListener("change", applyFilter);
+async function loadExpenses()
+{
+    
+    const response=await fetch(API_URL);
+    if (!response.ok) throw new Error("Request failed");
+
+    return  await response.json();
+   
+}
+ 
+
+// ---------- Validation ----------
+
+function validateExpenseForm(title, amount,category, date) {
+  let isValid = true;
+
+  const fields = [
+    { input: document.getElementById("title"), error: document.getElementById("titleError"), valid: title.trim() !== "", message: "Title is required." },
+    { input: document.getElementById("amount"), error: document.getElementById("amountError"), valid: !isNaN(amount) && amount > 0, message: "Enter an amount greater than 0." },
+    { input: document.getElementById("category"), error: document.getElementById("categoryError"), valid: category !== "", message: "Choose a Category." },
+    { input: document.getElementById("date"), error: document.getElementById("dateError"), valid: date !== "", message: "Date is required." }
+  ];
+
+  fields.forEach(function (field) {
+    field.input.classList.remove("is-invalid");
+    field.error.textContent = "";
+
+    if (!field.valid) {
+      field.input.classList.add("is-invalid");
+      field.error.textContent = field.message;
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+ 
+
+
+
+//   - async function addExpense(data)       fetch(API_URL, { method: "POST", ... })
+async function addExpense(data)
+{
+    try {
+    const response=await fetch(API_URL,
+      {method: "POST", headers: {"Content-Type": "application/json"}, 
+      body: JSON.stringify(data)});
+    if (!response.ok) {
+      const message = await getErrorMessage(response, "Failed to add expense.");
+      throw new Error(message);
+    }
+
+
+    const newExpense = await response.json();
+        return newExpense;
+
+    
+    }
+    catch (err) {
+    console.error(err);
+    showError(err.message || "Something went wrong while adding the expense. Please make sure the server is running.");
+
+  }
+ 
+
+}
+document.getElementById("expenseForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const data = {
+    title: document.getElementById("title").value,
+    amount: parseFloat(document.getElementById("amount").value),
+    category: document.getElementById("category").value,
+    date: document.getElementById("date").value
+  };
+  if (!validateExpenseForm(data.title, data.amount, data.category, data.date)) {
+    return;
+  }
+
+  await addExpense(data   );
+  await refresh();
+  e.target.reset();
+});
+
+  refresh();
+
+//   - async function updateExpense(id,data) fetch(API_URL + "/" + id, { method: "PUT", ... })
+let currentExpenses = [];   
+
+const editModalEl = document.getElementById("editModal");
+const editModal = new bootstrap.Modal(editModalEl);
+
+async function updateExpense(id, data) {
+  try {
+    const response = await fetch(API_URL + "/" + id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+ if (!response.ok) {
+      const message = await getErrorMessage(response, "Failed to update expense.");
+      throw new Error(message);
+    }
+    return await response.json();
+
+  } catch (err) {
+    console.error(err);
+    showError(err.message || "Something went wrong while updating the expense.");
+  }
+}
+
+function editClick(id) {
+  const expense = currentExpenses.find(e => e.id === id);
+  if (!expense) return;
+
+  document.getElementById("editId").value = expense.id;
+  document.getElementById("editTitle").value = expense.title;
+  document.getElementById("editAmount").value = expense.amount;
+  document.getElementById("editCategory").value = expense.category;
+  document.getElementById("editDate").value = expense.date.split("T")[0];
+
+  editModal.show();
+}
+
+document.getElementById("editForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const id = document.getElementById("editId").value;
+  const data = {
+    title: document.getElementById("editTitle").value,
+    amount: parseFloat(document.getElementById("editAmount").value),
+    category: document.getElementById("editCategory").value,
+    date: document.getElementById("editDate").value
+  };
+
+  await updateExpense(id, data);
+  editModal.hide();
+  await refresh();
+});
+//   - async function deleteExpense(id)      fetch(API_URL + "/" + id, { method: "DELETE" })
+async function deleteExpense(id) {
+  try {
+    const response = await fetch(API_URL + "/" + id, { method: "DELETE" });
+ if (!response.ok) {
+      const message = await getErrorMessage(response, "Failed to delete expense.");
+      throw new Error(message);
+    }
+        await refresh();
+  } catch (err) {
+    console.error(err);
+    showError(err.message || "Couldn't delete the expense.");
+  }
+}
+//   - async function refresh()              get the list, then call renderTable and renderSummary
+ async function refresh() {
+  showSpinner(); 
+    hideError(); 
+  try {
+    const expenses = await loadExpenses();
+    renderTable(expenses);
+     applyFilter(); 
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = "";   
+    showError("Couldn't load expenses. Please make sure the server is running.");
+  }
+}
+
+  
+
+//   - renderTable(list)                     build the table rows from the array the API returned
+ function renderTable(expenses) {
+    currentExpenses = expenses;
+    renderTableOnly(expenses);
+ }
+ function renderTableOnly(expenses) {
+  tbody.innerHTML = "";
+
+  expenses.forEach(function (expense) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${expense.title}</td>
+      <td>${Number(expense.amount).toFixed(2)}  JOD</td>
+      <td> <span class="badge text-bg-warning">${expense.category}</span></td>
+      <td>${expense.date.split("T")[0]}</td>
+      <td>
+        <button class="btn btn btn-outline-success "onclick="editClick(${expense.id})">Edit</button>
+        <button class="btn btn-outline-danger"onclick="deleteExpense(${expense.id})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+}
+//   - renderSummary(list)                   update the summary cards
+function renderSummary(expenses) {
+  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const max = expenses.length ? Math.max(...expenses.map(e => Number(e.amount))) : 0;
+
+  document.querySelector("#totalcard .value").textContent = total.toFixed(2)+"  JOD";
+  document.querySelector("#countcard .value").textContent = expenses.length;
+  document.querySelector("#maxcard .value").textContent = max.toFixed(2)+"  JOD";
+}
+//   - applyFilter()                         re-render with the list filtered by category
+function applyFilter() {
+  const selectedCategory = document.getElementById("categoryFilter").value;
+    const selectedMonth = document.getElementById("monthFilter").value;
+
+let filtered = currentExpenses;
+
+  if (selectedCategory) {
+    filtered = filtered.filter(e => e.category === selectedCategory);
+  }
+
+  if (selectedMonth) {
+    filtered = filtered.filter(e => e.date.split("T")[0].split("-")[1] === selectedMonth);
+  }
+
+  renderTableOnly(filtered);
+  renderSummary(filtered);
+}
+
+//-Spinner----------------------
+function showSpinner() {
+  const spinnerRow = document.createElement("tr");
+  spinnerRow.innerHTML = `
+    <td colspan="5" class="text-center p-5">
+      <button class="btn btn-success" type="button" disabled>
+  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+  <span role="status">Loading...</span>
+</button>
+    </td>
+  `;
+  tbody.innerHTML = "";
+  tbody.appendChild(spinnerRow);
+}
+//alert----------------------
+function showError(message) {
+  const alertBox = document.getElementById("errorAlert");
+  alertBox.textContent = message;
+  alertBox.classList.remove("d-none");
+}
+
+function hideError() {
+  document.getElementById("errorAlert").classList.add("d-none");
+}
+async function getErrorMessage(response, fallback) {
+  try {
+    const data = await response.json();
+    return data.message || data.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
+//dark mode----------------------
+const darkModeToggle = document.getElementById("darkModeToggle");
+
+darkModeToggle.addEventListener("click", function () {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    darkModeToggle.textContent = "Light Mode";
+    localStorage.setItem("theme", "dark");
+  } else {
+    darkModeToggle.textContent = "Dark Mode";
+    localStorage.setItem("theme", "light");
+  }
+});
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  darkModeToggle.textContent = "Light Mode";
+}
+
